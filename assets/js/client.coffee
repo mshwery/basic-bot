@@ -64,7 +64,7 @@ $( ->
     for el in $("[data-keyboard]")
       $el = $(el)
       if e.which == $el.data 'keyboard'
-        directions[$el.data('channel')]
+        directions[$el.data('channel')] = true
         emitStuff()
         #socket.emit $el.data('channel'), $el.data 'value'
 
