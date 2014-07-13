@@ -52,8 +52,13 @@ $( ->
   $('.emitter').on 'mouseup, touchend', (e)->
     $el = $(e.currentTarget)
     directions[$el.data('channel')] = false
-    emitStuff()
-    #socket.emit "stop", "stop"
+    directions['stop'] = true
+    directions['left'] = false
+    directions['right'] = false
+    directions['up'] = false
+    direction['down'] = false
+    #emitStuff()
+    socket.emit "stop", "stop"
 
   $(window).keydown (e)->
     for el in $("[data-keyboard]")
@@ -65,7 +70,12 @@ $( ->
 
   $(window).keyup (e)->
     directions['stop'] = true
-    emitStuff()
-    # socket.emit "stop", "stop"
+    directions['left'] = false
+    directions['right'] = false
+    directions['up'] = false
+    direction['down'] = false
+
+    #emitStuff()
+    socket.emit "stop", "stop"
 
 )
