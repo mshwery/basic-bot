@@ -15,23 +15,28 @@ $( ->
     down: false
 
   emitStuff = ->
-    chan = 'stop'
+    chan = ''
     msg = ''
 
     if directions.up
       chan = 'up'
-      if directions.left
-        chan = 'forwardLeft'
-      if directions.right
-        chan = 'forwardRight'
+
+    if directions.up && directions.left
+      chan = 'forwardLeft'
+
+    if directions.up && directions.right
+      chan = 'forwardRight'
+
     if directions.down
       chan = 'down'
+
     if directions.left
       chan = 'left'
+      
     if directions.right
       chan = 'right'
-    if directions.stop
-      chan = 'stop'
+
+    if !chan then chan = 'stop'
 
     if chan == 'stop' then msg = 'stop'
 
@@ -52,13 +57,7 @@ $( ->
   $('.emitter').on 'mouseup, touchend', (e)->
     $el = $(e.currentTarget)
     directions[$el.data('channel')] = false
-    directions['stop'] = true
-    directions['left'] = false
-    directions['right'] = false
-    directions['up'] = false
-    direction['down'] = false
     #emitStuff()
-    socket.emit "stop", "stop"
 
   $(window).keydown (e)->
     for el in $("[data-keyboard]")
@@ -69,13 +68,11 @@ $( ->
         #socket.emit $el.data('channel'), $el.data 'value'
 
   $(window).keyup (e)->
-    directions['stop'] = true
-    directions['left'] = false
-    directions['right'] = false
-    directions['up'] = false
-    direction['down'] = false
-
-    #emitStuff()
-    socket.emit "stop", "stop"
+    for el in $("[data-keyboard]")
+      $el = $(el)
+      if e.which == $el.data 'keyboard'
+        directions[$el.data('channel')] = false
+        emitStuff()   
+    #socket.emit "stop", "stop"
 
 )
