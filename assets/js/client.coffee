@@ -14,25 +14,7 @@ $( ->
     right: false
     down: false
 
-  socket.on "connection", (msg) ->
-    socket.emit "hello", "world"
-
-  socket.on "feedback", (msg) ->
-    $("#feedback").text msg
-
-  $('.emitter').on 'mousedown, touchstart', (e)->
-    $el = $(e.currentTarget)
-    directions[$el.data('channel')] = true
-    emitStuff()
-    #socket.emit $el.data('channel'), $el.data 'value'
-
-  $('.emitter').on 'mouseup, touchend', (e)->
-    $el = $(e.currentTarget)
-    directions[$el.data('channel')] = false
-    emitStuff()
-    #socket.emit "stop", "stop"
-
-  emitStuff ->
+  emitStuff = ->
     chan = 'stop'
     msg = ''
 
@@ -54,6 +36,24 @@ $( ->
     if chan == 'stop' then msg = 'stop'
 
     socket.emit chan, msg
+
+  socket.on "connection", (msg) ->
+    socket.emit "hello", "world"
+
+  socket.on "feedback", (msg) ->
+    $("#feedback").text msg
+
+  $('.emitter').on 'mousedown, touchstart', (e)->
+    $el = $(e.currentTarget)
+    directions[$el.data('channel')] = true
+    emitStuff()
+    #socket.emit $el.data('channel'), $el.data 'value'
+
+  $('.emitter').on 'mouseup, touchend', (e)->
+    $el = $(e.currentTarget)
+    directions[$el.data('channel')] = false
+    emitStuff()
+    #socket.emit "stop", "stop"
 
   $(window).keydown (e)->
     for el in $("[data-keyboard]")
