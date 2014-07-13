@@ -1,10 +1,18 @@
 #= require jquery
 #= require bootstrap
 #= require socket.io
+#= require underscore
 
 $( ->
   # set up the socket.io
   socket = io.connect() 
+
+  directions = 
+    left: false
+    up: false
+    stop: false
+    right: false
+    down: false
 
   socket.on "connection", (msg) ->
     socket.emit "hello", "world"
@@ -14,18 +22,50 @@ $( ->
 
   $('.emitter').on 'mousedown, touchstart', (e)->
     $el = $(e.currentTarget)
-    socket.emit $el.data('channel'), $el.data 'value'
+    directions[$el.data('channel')] = true
+    emitStuff()
+    #socket.emit $el.data('channel'), $el.data 'value'
 
   $('.emitter').on 'mouseup, touchend', (e)->
-    socket.emit "stop", "stop"
+    $el = $(e.currentTarget)
+    directions[$el.data('channel')] = false
+    emitStuff()
+    #socket.emit "stop", "stop"
+
+  emitStuff ->
+    chan = 'stop'
+    msg = ''
+
+    if directions.up
+      chan = 'up'
+      if directions.left
+        chan = 'forwardLeft'
+      if directions.right
+        chan = 'forwardRight'
+    if directions.down
+      chan = 'down'
+    if directions.left
+      chan = 'left'
+    if directions.right
+      chan = 'right'
+    if directions.stop
+      chan = 'stop'
+
+    if chan == 'stop' then msg = 'stop'
+
+    socket.emit chan, msg
 
   $(window).keydown (e)->
     for el in $("[data-keyboard]")
       $el = $(el)
       if e.which == $el.data 'keyboard'
-        socket.emit $el.data('channel'), $el.data 'value'
+        directions[$el.data('channel')]
+        emitStuff()
+        #socket.emit $el.data('channel'), $el.data 'value'
 
   $(window).keyup (e)->
-    socket.emit "stop", "stop"
+    directions['stop'] = true
+    emitStuff()
+    # socket.emit "stop", "stop"
 
 )

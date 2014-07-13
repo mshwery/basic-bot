@@ -18,9 +18,9 @@ child = exec "uname -m", (error, stdout, stderr) ->
 
 #TODO: change these pins to your pins!
 exports.motors = 
-  a:
+  b:
     dir: 23
     pow: 18
-  b:
+  a:
     dir: 22
     pow: 17

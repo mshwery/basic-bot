@@ -16,6 +16,20 @@ forward = ->
     pins[config.motors.b.pow].set()
     pins[config.motors.b.dir].set(0)
 
+forwardLeft = ->
+  if config.isPI
+    pins[config.motors.a.pow].set(0.25)
+    pins[config.motors.a.dir].set()
+    pins[config.motors.b.pow].set()
+    pins[config.motors.b.dir].set(0)
+
+forwardRight = ->
+  if config.isPI
+    pins[config.motors.a.pow].set()
+    pins[config.motors.a.dir].set(0)
+    pins[config.motors.b.pow].set(0.25)
+    pins[config.motors.b.dir].set()  
+
 backward = ->
   if config.isPI
     pins[config.motors.a.pow].set(0)
@@ -103,4 +117,14 @@ module.exports = (socket) ->
     socket?.emit "feedback", "halt!"
     stop()
     console.log "stop!"
+
+  socket.on "forwardLeft", (data) ->
+    socket?.emit "feedback", "slight left"
+    forwardLeft()
+    console.log "forward and left!"
+
+  socket.on "forwardRight", (data) ->
+    socket?.emit "feedback", "slight right"
+    forwardRight()
+    console.log "forward and right!"
 
